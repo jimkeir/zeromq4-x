@@ -78,7 +78,10 @@ int zmq::mailbox_t::recv (command_t *cmd_, int timeout_)
 
     //  Get a command.
     errno_assert (rc == 0);
+
+    // check_read says that this can fail during deallocation. So, instead of using
+    // the fatal zmq_assert, just return a normal failure.
     bool ok = cpipe.read (cmd_);
-    zmq_assert (ok);
-    return 0;
+
+    return (ok ? 0 : -1);
 }
